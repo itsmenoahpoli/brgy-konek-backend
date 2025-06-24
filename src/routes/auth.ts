@@ -6,8 +6,45 @@ import {
   loginValidation,
   validateRequest,
 } from "../utils/validation";
+import multer, { FileFilterCallback } from "multer";
+import { Request } from "express";
 
 const router = Router();
+
+const storage = multer.diskStorage({
+  destination: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, destination: string) => void
+  ) => {
+    cb(null, "uploads");
+  },
+  filename: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, filename: string) => void
+  ) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
+  if (
+    file.mimetype === "application/pdf" ||
+    file.mimetype.startsWith("image/")
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF and image files are allowed"));
+  }
+};
+
+const upload = multer({ storage, fileFilter });
 
 /**
  * @swagger
@@ -82,9 +119,42 @@ const router = Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             required:
+ *               - first_name
+ *               - last_name
+ *               - email
+ *               - password
+ *               - mobile_number
+ *               - user_type
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 maxLength: 50
+ *               middle_name:
+ *                 type: string
+ *                 maxLength: 50
+ *               last_name:
+ *                 type: string
+ *                 maxLength: 50
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *               mobile_number:
+ *                 type: string
+ *                 pattern: '^(3|0)9\d{9}$'
+ *               user_type:
+ *                 type: string
+ *                 enum: [resident, staff, admin]
+ *               barangay_clearance:
+ *                 type: string
+ *                 format: binary
+ *                 description: Optional. PDF or image file for barangay clearance.
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -106,7 +176,13 @@ const router = Router();
  *                   items:
  *                     type: object
  */
-router.post("/register", registerValidation, validateRequest, register);
+router.post(
+  "/register",
+  upload.single("barangay_clearance"),
+  registerValidation,
+  validateRequest,
+  register
+);
 
 /**
  * @swagger

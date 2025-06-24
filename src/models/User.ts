@@ -2,34 +2,24 @@ import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
 export interface IUser extends Document {
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
+  name: string;
   email: string;
   password: string;
-  mobile_number: string;
+  mobile_number?: string;
   user_type: "resident" | "staff" | "admin";
+  address?: string;
+  birthdate?: Date;
+  barangay_clearance?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>(
   {
-    first_name: {
+    name: {
       type: String,
-      required: [true, "First name is required"],
+      required: [true, "Name is required"],
       trim: true,
-      maxlength: [50, "First name cannot exceed 50 characters"],
-    },
-    middle_name: {
-      type: String,
-      trim: true,
-      maxlength: [50, "Middle name cannot exceed 50 characters"],
-    },
-    last_name: {
-      type: String,
-      required: [true, "Last name is required"],
-      trim: true,
-      maxlength: [50, "Last name cannot exceed 50 characters"],
+      maxlength: [100, "Name cannot exceed 100 characters"],
     },
     email: {
       type: String,
@@ -49,7 +39,6 @@ const userSchema = new Schema<IUser>(
     },
     mobile_number: {
       type: String,
-      required: [true, "Mobile number is required"],
       trim: true,
       match: [
         /^(\+63|0)9\d{9}$/,
@@ -64,6 +53,18 @@ const userSchema = new Schema<IUser>(
       },
       required: [true, "User type is required"],
       default: "resident",
+    },
+    address: {
+      type: String,
+      trim: true,
+      maxlength: [200, "Address cannot exceed 200 characters"],
+    },
+    birthdate: {
+      type: Date,
+    },
+    barangay_clearance: {
+      type: String,
+      required: false,
     },
   },
   {

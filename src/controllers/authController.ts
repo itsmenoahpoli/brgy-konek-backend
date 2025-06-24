@@ -9,14 +9,16 @@ interface AuthRequest extends Request {
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
-      first_name,
-      middle_name,
-      last_name,
+      name,
       email,
       password,
       mobile_number,
       user_type,
+      address,
+      birthdate,
     } = req.body;
+
+    console.log(req.body);
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -25,13 +27,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const user = new User({
-      first_name,
-      middle_name,
-      last_name,
+      name,
       email,
       password,
       mobile_number,
-      user_type,
+      user_type: user_type || "resident",
+      address,
+      birthdate: birthdate ? new Date(birthdate) : undefined,
+      barangay_clearance: req.file ? req.file.filename : undefined,
     });
 
     await user.save();
@@ -42,8 +45,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // @ts-ignore
-    const token = jwt.sign({ userId: user._id }, Buffer.from(jwtSecret), {
+    const token = jwt.sign({ userId: user._id }, jwtSecret as string, {
       expiresIn: process.env.JWT_EXPIRES_IN || "7d",
     });
 
@@ -52,12 +54,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       token,
       user: {
         id: user._id,
-        first_name: user.first_name,
-        middle_name: user.middle_name,
-        last_name: user.last_name,
+        name: user.name,
         email: user.email,
         mobile_number: user.mobile_number,
         user_type: user.user_type,
+        address: user.address,
+        birthdate: user.birthdate,
+        barangay_clearance: user.barangay_clearance,
       },
     });
   } catch (error) {
@@ -90,7 +93,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // @ts-ignore
-    const token = jwt.sign({ userId: user._id }, Buffer.from(jwtSecret), {
+    const token = jwt.sign({ userId: user._id }, jwtSecret as string, {
       expiresIn: process.env.JWT_EXPIRES_IN || "7d",
     });
 
@@ -99,12 +102,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       token,
       user: {
         id: user._id,
-        first_name: user.first_name,
-        middle_name: user.middle_name,
-        last_name: user.last_name,
+        name: user.name,
         email: user.email,
         mobile_number: user.mobile_number,
         user_type: user.user_type,
+        address: user.address,
+        birthdate: user.birthdate,
       },
     });
   } catch (error) {
