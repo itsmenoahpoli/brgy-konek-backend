@@ -108,101 +108,11 @@ http://localhost:3000/docs
 
 ## API Endpoints
 
-### Authentication
+The following endpoints are available. For detailed request/response schemas and descriptions, please refer to the Swagger documentation at `/docs`.
 
-#### POST /api/auth/register
-
-Register a new user.
-
-**Request Body:**
-
-```json
-{
-  "first_name": "John",
-  "middle_name": "Doe",
-  "last_name": "Smith",
-  "email": "john.smith@example.com",
-  "password": "password123",
-  "mobile_number": "09123456789",
-  "user_type": "resident"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "User registered successfully",
-  "token": "jwt-token-here",
-  "user": {
-    "id": "user-id",
-    "first_name": "John",
-    "middle_name": "Doe",
-    "last_name": "Smith",
-    "email": "john.smith@example.com",
-    "mobile_number": "09123456789",
-    "user_type": "resident"
-  }
-}
-```
-
-#### POST /api/auth/login
-
-Login with email and password.
-
-**Request Body:**
-
-```json
-{
-  "email": "john.smith@example.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Login successful",
-  "token": "jwt-token-here",
-  "user": {
-    "id": "user-id",
-    "first_name": "John",
-    "middle_name": "Doe",
-    "last_name": "Smith",
-    "email": "john.smith@example.com",
-    "mobile_number": "09123456789",
-    "user_type": "resident"
-  }
-}
-```
-
-#### GET /api/auth/my-profile
-
-Get authenticated user's profile (requires JWT token).
-
-**Headers:**
-
-```
-Authorization: Bearer <jwt-token>
-```
-
-**Response:**
-
-```json
-{
-  "message": "Profile retrieved successfully",
-  "user": {
-    "id": "user-id",
-    "first_name": "John",
-    "middle_name": "Doe",
-    "last_name": "Smith",
-    "email": "john.smith@example.com",
-    "mobile_number": "09123456789",
-    "user_type": "resident"
-  }
-}
-```
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/my-profile`
 
 ## User Types
 
