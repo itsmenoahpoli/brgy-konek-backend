@@ -66,6 +66,9 @@ const upload = multer({ storage, fileFilter });
  *         - password
  *         - user_type
  *       properties:
+ *         _id:
+ *           type: string
+ *           description: Unique identifier for the user
  *         name:
  *           type: string
  *           description: User's full name
@@ -73,11 +76,7 @@ const upload = multer({ storage, fileFilter });
  *         email:
  *           type: string
  *           format: email
- *           description: User's email address
- *         password:
- *           type: string
- *           minLength: 6
- *           description: User's password
+ *           description: User's email address (unique)
  *         mobile_number:
  *           type: string
  *           pattern: '^(\+63|0)9\d{9}$'
@@ -85,25 +84,44 @@ const upload = multer({ storage, fileFilter });
  *         user_type:
  *           type: string
  *           enum: [resident, staff, admin]
- *           description: Type of user
+ *           description: Type of user account
  *           default: resident
  *         address:
  *           type: string
  *           maxLength: 200
- *           description: User's address
+ *           description: User's residential address
  *         birthdate:
  *           type: string
  *           format: date
- *           description: User's birthdate
+ *           description: User's date of birth
  *         barangay_clearance:
  *           type: string
  *           description: Filename of uploaded barangay clearance document
  *         createdAt:
  *           type: string
  *           format: date-time
+ *           description: Account creation timestamp
  *         updatedAt:
  *           type: string
  *           format: date-time
+ *           description: Last update timestamp
+ *     OTP:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email address associated with the OTP
+ *         code:
+ *           type: string
+ *           description: 6-digit OTP code
+ *         expires_at:
+ *           type: string
+ *           format: date-time
+ *           description: OTP expiration timestamp
+ *         verified:
+ *           type: boolean
+ *           description: Whether the OTP has been verified
  *     RegisterRequest:
  *       type: object
  *       required:
@@ -189,6 +207,15 @@ const upload = multer({ storage, fileFilter });
  *       properties:
  *         message:
  *           type: string
+ *     Error:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           description: Error message
+ *         error:
+ *           type: string
+ *           description: Detailed error information (optional)
  */
 
 /**
