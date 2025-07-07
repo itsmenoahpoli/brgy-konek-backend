@@ -59,25 +59,15 @@ const upload = multer({ storage, fileFilter });
  *     User:
  *       type: object
  *       required:
- *         - first_name
- *         - last_name
+ *         - name
  *         - email
  *         - password
- *         - mobile_number
  *         - user_type
  *       properties:
- *         first_name:
+ *         name:
  *           type: string
- *           description: User's first name
- *           maxLength: 50
- *         middle_name:
- *           type: string
- *           description: User's middle name (optional)
- *           maxLength: 50
- *         last_name:
- *           type: string
- *           description: User's last name
- *           maxLength: 50
+ *           description: User's full name
+ *           maxLength: 100
  *         email:
  *           type: string
  *           format: email
@@ -94,6 +84,57 @@ const upload = multer({ storage, fileFilter });
  *           type: string
  *           enum: [resident, staff, admin]
  *           description: Type of user
+ *           default: resident
+ *         address:
+ *           type: string
+ *           maxLength: 200
+ *           description: User's address
+ *         birthdate:
+ *           type: string
+ *           format: date
+ *           description: User's birthdate
+ *         barangay_clearance:
+ *           type: string
+ *           description: Filename of uploaded barangay clearance document
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *     RegisterRequest:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *         - user_type
+ *       properties:
+ *         name:
+ *           type: string
+ *           maxLength: 100
+ *         email:
+ *           type: string
+ *           format: email
+ *         password:
+ *           type: string
+ *           minLength: 6
+ *         mobile_number:
+ *           type: string
+ *           pattern: '^(\+63|0)9\d{9}$'
+ *         user_type:
+ *           type: string
+ *           enum: [resident, staff, admin]
+ *         address:
+ *           type: string
+ *           maxLength: 200
+ *         birthdate:
+ *           type: string
+ *           format: date
+ *         barangay_clearance:
+ *           type: string
+ *           format: binary
+ *           description: Optional. PDF or image file for barangay clearance
  *     LoginRequest:
  *       type: object
  *       required:
@@ -114,6 +155,38 @@ const upload = multer({ storage, fileFilter });
  *           type: string
  *         user:
  *           $ref: '#/components/schemas/User'
+ *     ProfileResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *         user:
+ *           $ref: '#/components/schemas/User'
+ *     OTPRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *     OTPVerifyRequest:
+ *       type: object
+ *       required:
+ *         - email
+ *         - otp_code
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *         otp_code:
+ *           type: string
+ *           description: 6-digit OTP code
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
  */
 
 /**
@@ -127,40 +200,7 @@ const upload = multer({ storage, fileFilter });
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             required:
- *               - first_name
- *               - last_name
- *               - email
- *               - password
- *               - mobile_number
- *               - user_type
- *             properties:
- *               first_name:
- *                 type: string
- *                 maxLength: 50
- *               middle_name:
- *                 type: string
- *                 maxLength: 50
- *               last_name:
- *                 type: string
- *                 maxLength: 50
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 minLength: 6
- *               mobile_number:
- *                 type: string
- *                 pattern: '^(3|0)9\d{9}$'
- *               user_type:
- *                 type: string
- *                 enum: [resident, staff, admin]
- *               barangay_clearance:
- *                 type: string
- *                 format: binary
- *                 description: Optional. PDF or image file for barangay clearance.
+ *             $ref: '#/components/schemas/RegisterRequest'
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -173,14 +213,13 @@ const upload = multer({ storage, fileFilter });
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 errors:
- *                   type: array
- *                   items:
- *                     type: object
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post(
   "/register",

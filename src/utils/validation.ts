@@ -29,12 +29,6 @@ export const registerValidation = [
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-  body("confirmPassword").custom((value, { req }) => {
-    if (value !== req.body.password) {
-      throw new Error("Password confirmation does not match password");
-    }
-    return true;
-  }),
   body("mobile_number")
     .optional()
     .matches(/^(\+63|0)9\d{9}$/)
