@@ -5,11 +5,13 @@ import {
   getProfile,
   requestOTP,
   verifyOTP,
+  updateProfile,
 } from "../controllers/authController";
 import { authenticateToken } from "../middleware/auth";
 import {
   registerValidation,
   loginValidation,
+  updateProfileValidation,
   validateRequest,
 } from "../utils/validation";
 import multer, { FileFilterCallback } from "multer";
@@ -386,5 +388,92 @@ router.post("/request-otp", requestOTP);
  *                   type: string
  */
 router.post("/verify-otp", verifyOTP);
+
+/**
+ * @swagger
+ * /api/auth/update-profile:
+ *   put:
+ *     summary: Update authenticated user's profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 maxLength: 100
+ *                 description: User's full name
+ *               mobile_number:
+ *                 type: string
+ *                 pattern: '^(\+63|0)9\d{9}$'
+ *                 description: Philippine mobile number
+ *               address:
+ *                 type: string
+ *                 maxLength: 200
+ *                 description: User's address
+ *               birthdate:
+ *                 type: string
+ *                 format: date
+ *                 description: User's birthdate
+ *               barangay_clearance:
+ *                 type: string
+ *                 format: binary
+ *                 description: Optional. PDF or image file for barangay clearance
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.put(
+  "/update-profile",
+  authenticateToken,
+  upload.single("barangay_clearance"),
+  updateProfileValidation,
+  validateRequest,
+  updateProfile
+);
 
 export default router;

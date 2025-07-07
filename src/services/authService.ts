@@ -19,6 +19,14 @@ export interface LoginData {
   password: string;
 }
 
+export interface UpdateProfileData {
+  name?: string;
+  mobile_number?: string;
+  address?: string;
+  birthdate?: string;
+  barangay_clearance?: string;
+}
+
 export interface AuthResult {
   token: string;
   user: {
@@ -182,5 +190,41 @@ export const authService = {
 
     otp.verified = true;
     await otp.save();
+  },
+
+  async updateProfile(userId: string, data: UpdateProfileData) {
+    const user = (await User.findById(userId).exec()) as IUser | null;
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (data.name) {
+      user.name = data.name;
+    }
+    if (data.mobile_number !== undefined) {
+      user.mobile_number = data.mobile_number;
+    }
+    if (data.address !== undefined) {
+      user.address = data.address;
+    }
+    if (data.birthdate) {
+      user.birthdate = new Date(data.birthdate);
+    }
+    if (data.barangay_clearance !== undefined) {
+      user.barangay_clearance = data.barangay_clearance;
+    }
+
+    await user.save();
+
+    return {
+      id: user._id?.toString(),
+      name: user.name,
+      email: user.email,
+      mobile_number: user.mobile_number,
+      user_type: user.user_type,
+      address: user.address,
+      birthdate: user.birthdate,
+      barangay_clearance: user.barangay_clearance,
+    };
   },
 };

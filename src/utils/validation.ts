@@ -55,3 +55,24 @@ export const loginValidation = [
     .withMessage("Please provide a valid email address"),
   body("password").notEmpty().withMessage("Password is required"),
 ];
+
+export const updateProfileValidation = [
+  body("name")
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage("Name must be between 1 and 100 characters"),
+  body("mobile_number")
+    .optional()
+    .matches(/^(\+63|0)9\d{9}$/)
+    .withMessage("Please provide a valid Philippine mobile number"),
+  body("address")
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 200 })
+    .withMessage("Address must be between 1 and 200 characters"),
+  body("birthdate")
+    .optional()
+    .isISO8601()
+    .withMessage("Please provide a valid birthdate"),
+];

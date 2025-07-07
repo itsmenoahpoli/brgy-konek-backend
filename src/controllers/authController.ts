@@ -150,3 +150,37 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     }
   }
 };
+
+export const updateProfile = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      res.status(401).json({ message: "User not authenticated" });
+      return;
+    }
+
+    const { name, mobile_number, address, birthdate } = req.body;
+
+    const result = await authService.updateProfile(req.user.id, {
+      name,
+      mobile_number,
+      address,
+      birthdate,
+      barangay_clearance: req.file ? req.file.filename : undefined,
+    });
+
+    res.json({
+      message: "Profile updated successfully",
+      user: result,
+    });
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    if (errorMessage === "User not found") {
+      res.status(404).json({ message: errorMessage });
+    } else {
+      res.status(500).json({ message: "Server error", error: errorMessage });
+    }
+  }
+};
