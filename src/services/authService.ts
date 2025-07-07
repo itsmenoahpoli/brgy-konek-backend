@@ -27,6 +27,11 @@ export interface UpdateProfileData {
   barangay_clearance?: string;
 }
 
+export interface ResetPasswordData {
+  email: string;
+  new_password: string;
+}
+
 export interface AuthResult {
   token: string;
   user: {
@@ -164,6 +169,7 @@ export const authService = {
       code: otpCode,
       expires_at: otpExpiresAt,
       verified: false,
+      type: "email_verification",
     });
 
     await emailService.sendOTP(email, otpCode);
@@ -175,7 +181,11 @@ export const authService = {
       throw new Error("User not found");
     }
 
-    const otp = await Otp.findOne({ email, code: otpCode });
+    const otp = await Otp.findOne({
+      email,
+      code: otpCode,
+      type: "email_verification",
+    });
     if (!otp) {
       throw new Error("Invalid OTP code");
     }
@@ -226,5 +236,15 @@ export const authService = {
       birthdate: user.birthdate,
       barangay_clearance: user.barangay_clearance,
     };
+  },
+
+  async resetPassword(data: ResetPasswordData): Promise<void> {
+    const user = await User.findOne({ email: data.email });
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    user.password = data.new_password;
+    await user.save();
   },
 };

@@ -6,12 +6,14 @@ import {
   requestOTP,
   verifyOTP,
   updateProfile,
+  resetPassword,
 } from "../controllers/authController";
 import { authenticateToken } from "../middleware/auth";
 import {
   registerValidation,
   loginValidation,
   updateProfileValidation,
+  resetPasswordValidation,
   validateRequest,
 } from "../utils/validation";
 import multer, { FileFilterCallback } from "multer";
@@ -501,6 +503,69 @@ router.put(
   updateProfileValidation,
   validateRequest,
   updateProfile
+);
+
+/**
+ * @swagger
+ * /api/auth/reset-password:
+ *   post:
+ *     summary: Reset user's password
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp_code
+ *               - new_password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *               otp_code:
+ *                 type: string
+ *                 description: 6-digit OTP code
+ *               new_password:
+ *                 type: string
+ *                 description: New password
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid OTP or expired
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
+router.post(
+  "/reset-password",
+  resetPasswordValidation,
+  validateRequest,
+  resetPassword
 );
 
 export default router;

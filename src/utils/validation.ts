@@ -76,3 +76,13 @@ export const updateProfileValidation = [
     .isISO8601()
     .withMessage("Please provide a valid birthdate"),
 ];
+
+export const resetPasswordValidation = [
+  body("email")
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Please provide a valid email address"),
+  body("new_password")
+    .isLength({ min: 6 })
+    .withMessage("New password must be at least 6 characters long"),
+];

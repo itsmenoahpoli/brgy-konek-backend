@@ -125,6 +125,8 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, otp_code } = req.body;
 
+    console.log(email, otp_code);
+
     if (!email || !otp_code) {
       res.status(400).json({ message: "Email and OTP code are required" });
       return;
@@ -174,6 +176,37 @@ export const updateProfile = async (
     res.json({
       message: "Profile updated successfully",
       user: result,
+    });
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    if (errorMessage === "User not found") {
+      res.status(404).json({ message: errorMessage });
+    } else {
+      res.status(500).json({ message: "Server error", error: errorMessage });
+    }
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { email, new_password } = req.body;
+
+    console.log(email, new_password);
+
+    if (!email || !new_password) {
+      res.status(400).json({
+        message: "Email and new password are required",
+      });
+      return;
+    }
+
+    await authService.resetPassword({ email, new_password });
+
+    res.json({
+      message: "Password reset successfully",
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
