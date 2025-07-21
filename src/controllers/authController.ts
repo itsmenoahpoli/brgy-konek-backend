@@ -109,14 +109,17 @@ export const requestOTP = async (
     await authService.requestOTP(email);
 
     res.json({
+      success: true,
       message: "OTP sent successfully to your email",
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
     if (errorMessage === "User not found") {
-      res.status(404).json({ message: errorMessage });
+      res.status(404).json({ success: false, message: errorMessage });
     } else {
-      res.status(500).json({ message: "Server error", error: errorMessage });
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: errorMessage });
     }
   }
 };
@@ -128,27 +131,32 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
     console.log(email, otp_code);
 
     if (!email || !otp_code) {
-      res.status(400).json({ message: "Email and OTP code are required" });
+      res
+        .status(400)
+        .json({ success: false, message: "Email and OTP code are required" });
       return;
     }
 
     await authService.verifyOTP(email, otp_code);
 
     res.json({
+      success: true,
       message: "Email verified successfully",
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
     if (errorMessage === "User not found") {
-      res.status(404).json({ message: errorMessage });
+      res.status(404).json({ success: false, message: errorMessage });
     } else if (errorMessage === "No OTP requested") {
-      res.status(400).json({ message: errorMessage });
+      res.status(400).json({ success: false, message: errorMessage });
     } else if (errorMessage === "Invalid OTP code") {
-      res.status(400).json({ message: errorMessage });
+      res.status(400).json({ success: false, message: errorMessage });
     } else if (errorMessage === "OTP code has expired") {
-      res.status(400).json({ message: errorMessage });
+      res.status(400).json({ success: false, message: errorMessage });
     } else {
-      res.status(500).json({ message: "Server error", error: errorMessage });
+      res
+        .status(500)
+        .json({ success: false, message: "Server error", error: errorMessage });
     }
   }
 };
