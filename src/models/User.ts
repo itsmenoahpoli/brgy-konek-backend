@@ -40,10 +40,6 @@ const userSchema = new Schema<IUser>(
     mobile_number: {
       type: String,
       trim: true,
-      match: [
-        /^(\+63|0)9\d{9}$/,
-        "Please enter a valid Philippine mobile number",
-      ],
     },
     user_type: {
       type: String,

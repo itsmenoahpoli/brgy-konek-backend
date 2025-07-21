@@ -62,10 +62,7 @@ export const updateProfileValidation = [
     .trim()
     .isLength({ min: 1, max: 100 })
     .withMessage("Name must be between 1 and 100 characters"),
-  body("mobile_number")
-    .optional()
-    .matches(/^(\+63|0)9\d{9}$/)
-    .withMessage("Please provide a valid Philippine mobile number"),
+  body("mobile_number").optional(),
   body("address")
     .optional()
     .trim()

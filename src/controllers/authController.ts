@@ -158,6 +158,7 @@ export const updateProfile = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log(req.body);
     if (!req.user) {
       res.status(401).json({ message: "User not authenticated" });
       return;
@@ -170,7 +171,6 @@ export const updateProfile = async (
       mobile_number,
       address,
       birthdate,
-      barangay_clearance: req.file ? req.file.filename : undefined,
     });
 
     res.json({
@@ -182,6 +182,7 @@ export const updateProfile = async (
     if (errorMessage === "User not found") {
       res.status(404).json({ message: errorMessage });
     } else {
+      console.log(error);
       res.status(500).json({ message: "Server error", error: errorMessage });
     }
   }
