@@ -27,12 +27,6 @@ export const swaggerOptions: Options = {
         description: "Production server",
       },
     ],
-    tags: [
-      {
-        name: "Auth APIs",
-        description: "User authentications and other auth related APIs",
-      },
-    ],
     components: {
       securitySchemes: {
         bearerAuth: {

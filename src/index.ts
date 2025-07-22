@@ -8,6 +8,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import { connectDB } from "./config/database";
 import authRoutes from "./routes/auth";
 import complaintRoutes from "./routes/complaint";
+import announcementRoutes from "./routes/announcement";
 import { swaggerOptions } from "./config/swagger";
 import { requestLogger } from "./middleware/requestLogger";
 import { logger } from "./utils/logger";
@@ -35,6 +36,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
+app.use("/api/announcements", announcementRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "BrgyKonek API is running" });
