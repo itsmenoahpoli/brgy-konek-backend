@@ -8,6 +8,7 @@ export interface IAnnouncement extends Document {
   banner_image: string;
   status: "published" | "draft";
   created_at: Date;
+  posted_by: string;
 }
 
 const announcementSchema = new Schema<IAnnouncement>(
@@ -50,6 +51,11 @@ const announcementSchema = new Schema<IAnnouncement>(
       type: Date,
       default: Date.now,
       required: true,
+    },
+    posted_by: {
+      type: String,
+      required: true,
+      trim: true,
     },
   },
   {

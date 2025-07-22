@@ -16,7 +16,7 @@ export const create = async (req: Request, res: Response) => {
 export const getAll = async (req: Request, res: Response) => {
   try {
     const announcements = await announcementService.getAnnouncements();
-    res.json(announcements);
+    res.status(200).json(announcements);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -29,7 +29,7 @@ export const getById = async (req: Request, res: Response) => {
     );
     if (!announcement)
       return res.status(404).json({ error: "Announcement not found" });
-    res.json(announcement);
+    res.status(200).json(announcement);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -46,7 +46,7 @@ export const update = async (req: Request, res: Response) => {
     );
     if (!announcement)
       return res.status(404).json({ error: "Announcement not found" });
-    res.json(announcement);
+    res.status(200).json(announcement);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
@@ -59,7 +59,7 @@ export const remove = async (req: Request, res: Response) => {
     );
     if (!announcement)
       return res.status(404).json({ error: "Announcement not found" });
-    res.json({ message: "Announcement deleted" });
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }

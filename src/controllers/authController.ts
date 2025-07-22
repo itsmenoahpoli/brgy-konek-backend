@@ -40,7 +40,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     } else if (errorMessage === "JWT secret not configured") {
       res.status(500).json({ message: errorMessage });
     } else {
-      res.status(500).json({ message: "Server error", error: errorMessage });
+      res.status(400).json({ message: errorMessage });
     }
   }
 };
@@ -51,7 +51,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     const result = await authService.login({ email, password });
 
-    res.json({
+    res.status(200).json({
       message: "Login successful",
       token: result.token,
       user: result.user,
@@ -59,7 +59,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     const errorMessage = (error as Error).message;
     if (errorMessage === "Invalid credentials") {
-      res.status(401).json({ message: errorMessage });
+      res.status(400).json({ message: errorMessage });
     } else if (errorMessage === "JWT secret not configured") {
       res.status(500).json({ message: errorMessage });
     } else {
@@ -80,7 +80,7 @@ export const getProfile = async (
 
     const user = await authService.getProfile(req.user.id);
 
-    res.json({
+    res.status(200).json({
       message: "Profile retrieved successfully",
       user,
     });
@@ -108,7 +108,7 @@ export const requestOTP = async (
 
     await authService.requestOTP(email);
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "OTP sent successfully to your email",
     });
@@ -128,8 +128,6 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, otp_code } = req.body;
 
-    console.log(email, otp_code);
-
     if (!email || !otp_code) {
       res
         .status(400)
@@ -139,7 +137,7 @@ export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
 
     await authService.verifyOTP(email, otp_code);
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Email verified successfully",
     });
@@ -166,7 +164,6 @@ export const updateProfile = async (
   res: Response
 ): Promise<void> => {
   try {
-    console.log(req.body);
     if (!req.user) {
       res.status(401).json({ message: "User not authenticated" });
       return;
@@ -181,7 +178,7 @@ export const updateProfile = async (
       birthdate,
     });
 
-    res.json({
+    res.status(200).json({
       message: "Profile updated successfully",
       user: result,
     });
@@ -190,7 +187,6 @@ export const updateProfile = async (
     if (errorMessage === "User not found") {
       res.status(404).json({ message: errorMessage });
     } else {
-      console.log(error);
       res.status(500).json({ message: "Server error", error: errorMessage });
     }
   }
@@ -203,8 +199,6 @@ export const resetPassword = async (
   try {
     const { email, new_password } = req.body;
 
-    console.log(email, new_password);
-
     if (!email || !new_password) {
       res.status(400).json({
         message: "Email and new password are required",
@@ -214,7 +208,7 @@ export const resetPassword = async (
 
     await authService.resetPassword({ email, new_password });
 
-    res.json({
+    res.status(200).json({
       message: "Password reset successfully",
     });
   } catch (error) {
