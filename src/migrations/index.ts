@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import User from "../models/User";
+import Complaint from "../models/Complaint";
+import Announcement from "../models/Announcement";
 
 dotenv.config();
 
@@ -43,6 +45,219 @@ const migrations: Migration[] = [
       } else {
         console.log("✓ User collection already exists");
       }
+    },
+  },
+  {
+    id: "003_seed_residents_complaints_announcements",
+    name: "Seed resident accounts, resident complaints, and admin announcements",
+    up: async () => {
+      const residents = [
+        {
+          name: "Juan Dela Cruz",
+          email: "juan@example.com",
+          password: "password123",
+          user_type: "resident",
+          address: "123 Main St",
+          birthdate: new Date("1990-01-01"),
+          mobile_number: "09171234567",
+        },
+        {
+          name: "Maria Santos",
+          email: "maria@example.com",
+          password: "password123",
+          user_type: "resident",
+          address: "456 Second St",
+          birthdate: new Date("1985-05-15"),
+          mobile_number: "09181234567",
+        },
+      ];
+      const admins = [
+        {
+          name: "Admin User",
+          email: "admin@example.com",
+          password: "adminpass",
+          user_type: "admin",
+          address: "Barangay Hall",
+          birthdate: new Date("1980-12-12"),
+          mobile_number: "09991234567",
+        },
+      ];
+      const createdResidents = await User.insertMany(residents);
+      const createdAdmins = await User.insertMany(admins);
+      const announcements = [
+        {
+          title: "Barangay Assembly",
+          title_slug: "barangay-assembly",
+          header: "Join our barangay assembly",
+          body: "We invite all residents to join the upcoming barangay assembly this Saturday.",
+          banner_image:
+            "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Garbage Collection Schedule",
+          title_slug: "garbage-collection-schedule",
+          header: "New garbage collection schedule",
+          body: "Garbage will now be collected every Monday and Thursday.",
+          banner_image:
+            "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Free Medical Checkup",
+          title_slug: "free-medical-checkup",
+          header: "Avail free medical checkup this Sunday",
+          body: "Barangay health center offers free checkup for all residents.",
+          banner_image:
+            "https://images.unsplash.com/photo-1519494080410-f9aa8f52f1e7?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "COVID-19 Vaccination Drive",
+          title_slug: "covid19-vaccination-drive",
+          header: "Get vaccinated at the barangay hall",
+          body: "Walk-in vaccinations available for all age groups.",
+          banner_image:
+            "https://images.unsplash.com/photo-1588776814546-ec7e1b1b1b1b?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Barangay Fiesta",
+          title_slug: "barangay-fiesta",
+          header: "Celebrate our annual fiesta",
+          body: "Join us for food, games, and fun activities.",
+          banner_image:
+            "https://images.unsplash.com/photo-1509228468518-c5eeecbff44a?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Blood Donation Camp",
+          title_slug: "blood-donation-camp",
+          header: "Donate blood, save lives",
+          body: "Blood donation camp at the barangay gymnasium.",
+          banner_image:
+            "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Tree Planting Activity",
+          title_slug: "tree-planting-activity",
+          header: "Let’s make our barangay greener",
+          body: "Participate in our tree planting event this weekend.",
+          banner_image:
+            "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Youth Sports Fest",
+          title_slug: "youth-sports-fest",
+          header: "Calling all youth for the sports fest",
+          body: "Basketball, volleyball, and more at the covered court.",
+          banner_image:
+            "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Senior Citizens’ Day",
+          title_slug: "senior-citizens-day",
+          header: "Special day for our senior citizens",
+          body: "Free lunch and entertainment for all senior residents.",
+          banner_image:
+            "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+        {
+          title: "Barangay Clean-Up Drive",
+          title_slug: "barangay-cleanup-drive",
+          header: "Join our clean-up drive",
+          body: "Let’s keep our barangay clean and green.",
+          banner_image:
+            "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+          status: "published",
+          created_at: new Date(),
+          posted_by: createdAdmins[0].name,
+        },
+      ];
+      const complaintCategories = [
+        "Noise",
+        "Garbage",
+        "Vandalism",
+        "Water Supply",
+        "Road Damage",
+        "Stray Animals",
+        "Illegal Parking",
+        "Street Light",
+        "Flooding",
+        "Other",
+      ];
+      const complaintContents = [
+        "Loud music every night.",
+        "Uncollected garbage in the street.",
+        "Graffiti on the wall.",
+        "No water supply since morning.",
+        "Potholes on the main road.",
+        "Stray dogs roaming around.",
+        "Cars blocking the driveway.",
+        "Street light not working.",
+        "Flooding during heavy rain.",
+        "Other miscellaneous complaint.",
+      ];
+      let complaints = [];
+      for (let i = 0; i < 30; i++) {
+        complaints.push({
+          resident_id: createdResidents[i % createdResidents.length]._id,
+          category: complaintCategories[i % complaintCategories.length],
+          date_of_report: new Date(Date.now() - i * 86400000),
+          complaint_content:
+            complaintContents[i % complaintContents.length] + ` [${i + 1}]`,
+          attachments: [],
+          status: i % 2 === 0 ? "published" : "draft",
+        });
+      }
+      await Complaint.insertMany(complaints);
+      await Announcement.insertMany(announcements);
+    },
+    down: async () => {
+      await User.deleteMany({
+        email: {
+          $in: ["juan@example.com", "maria@example.com", "admin@example.com"],
+        },
+      });
+      await Complaint.deleteMany({ complaint_content: { $regex: /\[\d+\]$/ } });
+      await Announcement.deleteMany({
+        title_slug: {
+          $in: [
+            "barangay-assembly",
+            "garbage-collection-schedule",
+            "free-medical-checkup",
+            "covid19-vaccination-drive",
+            "barangay-fiesta",
+            "blood-donation-camp",
+            "tree-planting-activity",
+            "youth-sports-fest",
+            "senior-citizens-day",
+            "barangay-cleanup-drive",
+          ],
+        },
+      });
     },
   },
 ];
