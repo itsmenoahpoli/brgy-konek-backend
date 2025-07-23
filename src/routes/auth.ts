@@ -7,8 +7,12 @@ import {
   verifyOTP,
   updateProfile,
   resetPassword,
+  listUsers,
+  getUserById,
+  updateUserById,
+  deleteUserById,
 } from "../controllers/authController";
-import { authenticateToken } from "../middleware/auth";
+import { authenticateToken, isAdmin } from "../middleware/auth";
 import {
   registerValidation,
   loginValidation,
@@ -567,5 +571,10 @@ router.post(
   validateRequest,
   resetPassword
 );
+
+router.get("/admin/users", authenticateToken, isAdmin, listUsers);
+router.get("/admin/users/:id", authenticateToken, isAdmin, getUserById);
+router.put("/admin/users/:id", authenticateToken, isAdmin, updateUserById);
+router.delete("/admin/users/:id", authenticateToken, isAdmin, deleteUserById);
 
 export default router;

@@ -34,3 +34,15 @@ export const authenticateToken = async (
     res.status(401).json({ message: "Invalid token" });
   }
 };
+
+export const isAdmin = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.user || req.user.user_type !== "admin") {
+    res.status(403).json({ message: "Admin access required" });
+    return;
+  }
+  next();
+};

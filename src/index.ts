@@ -9,6 +9,7 @@ import { connectDB } from "./config/database";
 import authRoutes from "./routes/auth";
 import complaintRoutes from "./routes/complaint";
 import announcementRoutes from "./routes/announcement";
+import administratorRoutes from "./routes/administrator";
 import { swaggerOptions } from "./config/swagger";
 import { requestLogger } from "./middleware/requestLogger";
 import { logger } from "./utils/logger";
@@ -37,6 +38,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 app.use("/api/announcements", announcementRoutes);
+app.use("/api/administrator", administratorRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "BrgyKonek API is running" });

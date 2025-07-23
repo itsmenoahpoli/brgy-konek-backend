@@ -220,3 +220,60 @@ export const resetPassword = async (
     }
   }
 };
+
+export const listUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const users = await authService.listUsers();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
+
+export const getUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const user = await authService.getUserById(req.params.id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
+
+export const updateUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const user = await authService.updateUserById(req.params.id, req.body);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+
+export const deleteUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const user = await authService.deleteUserById(req.params.id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
