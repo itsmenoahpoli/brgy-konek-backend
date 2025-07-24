@@ -6,7 +6,7 @@ export const createComplaint = async (data: Record<string, any>) => {
 };
 
 export const getComplaints = async (filter: FilterQuery<Document> = {}) => {
-  return await Complaint.find(filter)
+  return await Complaint.find({ ...filter, status: "published" })
     .sort({ created_at: -1 })
     .populate("resident_id");
 };
