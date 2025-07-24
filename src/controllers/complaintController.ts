@@ -3,7 +3,11 @@ import * as complaintService from "../services/complaintService";
 
 export const createComplaint = async (req: Request, res: Response) => {
   try {
-    const complaint = await complaintService.createComplaint(req.body);
+    let data = { ...req.body };
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      data.attachments = req.files.map((file: any) => file.path);
+    }
+    const complaint = await complaintService.createComplaint(data);
     res.status(201).json(complaint);
   } catch (err) {
     const error = err instanceof Error ? err : new Error("Unknown error");

@@ -6,11 +6,13 @@ export const createComplaint = async (data: Record<string, any>) => {
 };
 
 export const getComplaints = async (filter: FilterQuery<Document> = {}) => {
-  return await Complaint.find(filter).sort({ createdAt: -1 });
+  return await Complaint.find(filter)
+    .sort({ created_at: -1 })
+    .populate("resident_id");
 };
 
 export const getComplaintById = async (id: string) => {
-  return await Complaint.findById(id);
+  return await Complaint.findById(id).populate("resident_id");
 };
 
 export const updateComplaint = async (
@@ -25,5 +27,5 @@ export const deleteComplaint = async (id: string) => {
 };
 
 export const getComplaintsByResidentId = async (resident_id: string) => {
-  return await Complaint.find({ resident_id }).sort({ createdAt: -1 });
+  return await Complaint.find({ resident_id }).sort({ created_at: -1 });
 };

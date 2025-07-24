@@ -81,7 +81,7 @@ const upload = multer({ storage, fileFilter });
 
 /**
  * @swagger
- * /announcements:
+ * /api/announcements:
  *   get:
  *     summary: Get all announcements
  *     tags: [Announcement]
@@ -127,7 +127,7 @@ const upload = multer({ storage, fileFilter });
  *             schema:
  *               $ref: '#/components/schemas/Announcement'
  *
- * /announcements/{id}:
+ * /api/announcements/{id}:
  *   get:
  *     summary: Get an announcement by ID
  *     tags: [Announcement]

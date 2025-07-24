@@ -9,13 +9,34 @@
  * @swagger
  * components:
  *   schemas:
+ *     Resident:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         email:
+ *           type: string
+ *         mobile_number:
+ *           type: string
+ *         user_type:
+ *           type: string
+ *         address:
+ *           type: string
+ *         birthdate:
+ *           type: string
+ *           format: date
+ *         barangay_clearance:
+ *           type: string
  *     Complaint:
  *       type: object
  *       properties:
  *         _id:
  *           type: string
  *         resident_id:
- *           type: string
+ *           $ref: '#/components/schemas/Resident'
+ *           description: The resident who filed the complaint. Populated object.
  *         category:
  *           type: string
  *         date_of_report:
@@ -27,6 +48,7 @@
  *           type: array
  *           items:
  *             type: string
+ *           description: Array of file paths for uploaded attachments. Files are stored in 'src/uploads'.
  *         status:
  *           type: string
  *           enum: [published, draft]
@@ -40,8 +62,45 @@
 
 import { Router } from "express";
 import * as complaintController from "../controllers/complaintController";
+import multer, { FileFilterCallback } from "multer";
+import { Request } from "express";
 
 const router = Router();
+
+const storage = multer.diskStorage({
+  destination: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, destination: string) => void
+  ) => {
+    cb(null, "src/uploads");
+  },
+  filename: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, filename: string) => void
+  ) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
+  if (
+    file.mimetype === "application/pdf" ||
+    file.mimetype.startsWith("image/")
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF and image files are allowed"));
+  }
+};
+
+const upload = multer({ storage, fileFilter });
 
 /**
  * @swagger
@@ -49,12 +108,33 @@ const router = Router();
  *   post:
  *     summary: Create a new complaint
  *     tags: [Complaints]
+ *     description: >-
+ *       Create a new complaint. Attachments (images or PDFs) are uploaded and saved to 'src/uploads'. Only the file path is stored in the database.
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Complaint'
+ *             type: object
+ *             properties:
+ *               resident_id:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               date_of_report:
+ *                 type: string
+ *                 format: date-time
+ *               complaint_content:
+ *                 type: string
+ *               attachments:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Optional. Array of image or PDF files. Files are saved to 'src/uploads'.
+ *               status:
+ *                 type: string
+ *                 enum: [published, draft]
  *     responses:
  *       201:
  *         description: Complaint created
@@ -65,7 +145,11 @@ const router = Router();
  *       400:
  *         description: Invalid input
  */
-router.post("/", complaintController.createComplaint);
+router.post(
+  "/",
+  upload.array("attachments", 10),
+  complaintController.createComplaint
+);
 
 /**
  * @swagger
