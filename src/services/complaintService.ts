@@ -23,3 +23,7 @@ export const updateComplaint = async (
 export const deleteComplaint = async (id: string) => {
   return await Complaint.findByIdAndDelete(id);
 };
+
+export const getComplaintsByResidentId = async (resident_id: string) => {
+  return await Complaint.find({ resident_id }).sort({ createdAt: -1 });
+};

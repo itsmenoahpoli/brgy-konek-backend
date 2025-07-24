@@ -2,6 +2,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import User, { IUser } from "../models/User";
 import { emailService } from "./emailService";
 import Otp from "../models/Otp";
+import argon2 from "argon2";
 
 export interface RegisterData {
   name: string;
@@ -53,10 +54,11 @@ export const authService = {
       throw new Error("User with this email already exists");
     }
 
+    const hashedPassword = await argon2.hash(data.password);
     const user = new User({
       name: data.name,
       email: data.email,
-      password: data.password,
+      password: hashedPassword,
       mobile_number: data.mobile_number,
       user_type: data.user_type || "resident",
       address: data.address,
@@ -102,7 +104,7 @@ export const authService = {
       throw new Error("Invalid credentials");
     }
 
-    const isPasswordValid = await user.comparePassword(data.password);
+    const isPasswordValid = await argon2.verify(user.password, data.password);
     if (!isPasswordValid) {
       throw new Error("Invalid credentials");
     }
@@ -244,7 +246,7 @@ export const authService = {
       throw new Error("User not found");
     }
 
-    user.password = data.new_password;
+    user.password = await argon2.hash(data.new_password);
     await user.save();
   },
 

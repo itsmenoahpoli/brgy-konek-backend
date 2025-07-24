@@ -56,3 +56,18 @@ export const deleteComplaint = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getComplaintsByResidentId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const complaints = await complaintService.getComplaintsByResidentId(
+      req.params.resident_id
+    );
+    res.status(200).json(complaints);
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error("Unknown error");
+    res.status(500).json({ error: error.message });
+  }
+};

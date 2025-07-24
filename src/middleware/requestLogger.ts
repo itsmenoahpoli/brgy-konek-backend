@@ -6,11 +6,12 @@ export const requestLogger = (
   res: Response,
   next: NextFunction
 ): void => {
-  const { method, body } = req;
+  const { method, body, originalUrl } = req;
 
   logger.info("HTTP Request", {
     timestamp: new Date().toISOString(),
     method,
+    endpoint: originalUrl,
     payload: body,
   });
 
@@ -20,6 +21,7 @@ export const requestLogger = (
     logger.info("HTTP Response", {
       timestamp: new Date().toISOString(),
       method,
+      endpoint: originalUrl,
       statusCode,
       payload: body,
     });

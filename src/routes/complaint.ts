@@ -87,6 +87,36 @@ router.get("/", complaintController.getComplaints);
 
 /**
  * @swagger
+ * /api/complaints/resident/{resident_id}:
+ *   get:
+ *     summary: Get complaints by resident ID
+ *     tags: [Complaints]
+ *     parameters:
+ *       - in: path
+ *         name: resident_id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Resident ID
+ *     responses:
+ *       200:
+ *         description: List of complaints for the resident
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Complaint'
+ *       404:
+ *         description: No complaints found for the resident
+ */
+router.get(
+  "/resident/:resident_id",
+  complaintController.getComplaintsByResidentId
+);
+
+/**
+ * @swagger
  * /api/complaints/{id}:
  *   get:
  *     summary: Get a complaint by ID

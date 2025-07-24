@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import User from "../models/User";
 import Complaint from "../models/Complaint";
 import Announcement from "../models/Announcement";
+import argon2 from "argon2";
 
 dotenv.config();
 
@@ -82,6 +83,12 @@ const migrations: Migration[] = [
           mobile_number: "09991234567",
         },
       ];
+      for (const user of residents) {
+        user.password = await argon2.hash(user.password);
+      }
+      for (const user of admins) {
+        user.password = await argon2.hash(user.password);
+      }
       const createdResidents = await User.insertMany(residents);
       const createdAdmins = await User.insertMany(admins);
       const announcements = [
