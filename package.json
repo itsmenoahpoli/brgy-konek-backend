@@ -37,6 +37,7 @@
     "nodemailer": "^7.0.4",
     "pug": "^3.0.3",
     "swagger-jsdoc": "^6.2.8",
+    "swagger-themes": "^1.4.3",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {

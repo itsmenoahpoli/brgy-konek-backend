@@ -13,6 +13,7 @@ import administratorRoutes from "./routes/administrator";
 import { swaggerOptions } from "./config/swagger";
 import { requestLogger } from "./middleware/requestLogger";
 import { logger } from "./utils/logger";
+import { SwaggerTheme, SwaggerThemeNameEnum } from "swagger-themes";
 
 dotenv.config();
 
@@ -33,7 +34,13 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 const specs = swaggerJsdoc(swaggerOptions);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+const theme = new SwaggerTheme();
+const swaggerUiOptions = {
+  customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
+};
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs, swaggerUiOptions));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
