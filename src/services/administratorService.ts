@@ -1,4 +1,5 @@
 import User, { IUser } from "../models/User";
+import argon2 from "argon2";
 
 export const listUsers = async () => {
   return User.find().select("-password");
@@ -33,4 +34,27 @@ export const updateUserById = async (userId: string, data: Partial<IUser>) => {
 
 export const deleteUserById = async (userId: string) => {
   return User.findByIdAndDelete(userId);
+};
+
+export const createUser = async (data: Partial<IUser>) => {
+  if (!data.name || !data.email || !data.password || !data.user_type) {
+    throw new Error("Missing required fields");
+  }
+  const existingUser = await User.findOne({ email: data.email });
+  if (existingUser) {
+    throw new Error("User with this email already exists");
+  }
+  const hashedPassword = await argon2.hash(data.password);
+  const user = new User({
+    name: data.name,
+    email: data.email,
+    password: hashedPassword,
+    mobile_number: data.mobile_number,
+    user_type: data.user_type,
+    address: data.address,
+    birthdate: data.birthdate,
+    barangay_clearance: data.barangay_clearance,
+  });
+  await user.save();
+  return User.findById(user._id).select("-password");
 };

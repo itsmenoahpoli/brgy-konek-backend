@@ -71,6 +71,39 @@ router.get(
 
 /**
  * @swagger
+ * /api/administrator/users:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Administrator]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Server error
+ */
+router.post(
+  "/users",
+  authenticateToken,
+  isAdmin,
+  administratorController.createUser
+);
+
+/**
+ * @swagger
  * /api/administrator/users/{id}:
  *   put:
  *     summary: Update user by ID
